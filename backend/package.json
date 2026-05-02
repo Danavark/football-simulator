@@ -1,0 +1,23 @@
+{
+  "name": "football-card-game-sim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Football card game simulation testbed (CLI).",
+  "scripts": {
+    "single": "ts-node src/test/run-single.ts",
+    "batch": "ts-node src/test/run-batch.ts",
+    "season": "ts-node src/test/run-season.ts",
+    "card": "ts-node src/test/run-card.ts",
+    "squad": "ts-node src/test/run-squad.ts",
+    "formation-season": "ts-node src/test/run-formation-season.ts",
+    "progression": "ts-node src/test/run-progression.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "prettier": "^3.8.3",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
+  }
+}
