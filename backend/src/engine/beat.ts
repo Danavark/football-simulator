@@ -2,17 +2,17 @@
 // This is intentionally written so a future pause system can yield between
 // processBeat calls — there's no closure over mutable data, no globals.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import { individualBrillianceTriggers, resolveChance } from '@/engine/resolution/goals'
-import { foulProbability, resolveFoul, rollFoulInjury, rollPassiveInjury } from '@/engine/resolution/fouls'
-import { adjustMomentumForHome, decayMomentum } from '@/engine/mechanics/momentum'
-import { pickAttackingSide } from '@/engine/mechanics/possession'
-import { adjustRating } from '@/engine/mechanics/ratings'
-import type { RNG } from '@/lib/rng'
-import { classifySetPiece, resolveSetPiece, type SetPieceResolution } from '@/engine/resolution/setPieces'
-import { applyBeatStaminaDrain, applyGoalStaminaBoost } from '@/engine/mechanics/stamina'
-import { tryAutoSub } from '@/engine/mechanics/subs'
-import { sigmoid } from '@/engine/stats'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import { individualBrillianceTriggers, resolveChance } from '~/engine/resolution/goals'
+import { foulProbability, resolveFoul, rollFoulInjury, rollPassiveInjury } from '~/engine/resolution/fouls'
+import { adjustMomentumForHome, decayMomentum } from '~/engine/mechanics/momentum'
+import { pickAttackingSide } from '~/engine/mechanics/possession'
+import { adjustRating } from '~/engine/mechanics/ratings'
+import type { RNG } from '~/lib/rng'
+import { classifySetPiece, resolveSetPiece, type SetPieceResolution } from '~/engine/resolution/setPieces'
+import { applyBeatStaminaDrain, applyGoalStaminaBoost } from '~/engine/mechanics/stamina'
+import { tryAutoSub } from '~/engine/mechanics/subs'
+import { sigmoid } from '~/engine/stats'
 import type {
   BeatResult,
   ChanceDetail,
@@ -23,8 +23,8 @@ import type {
   Side,
   Squad,
   Zone
-} from '@/types'
-import { buildMatchup, pickZone, scoreMatchup } from '@/engine/zones'
+} from '~/types'
+import { buildMatchup, pickZone, scoreMatchup } from '~/engine/zones'
 
 // Look up a player's live match state by card id and side.
 function getStateById(state: MatchState, side: Side, cardId: string): PlayerMatchState | undefined {
@@ -173,7 +173,7 @@ export function processBeat(state: MatchState, rng: RNG): MatchState {
         if (sp) {
           const spRes = resolveSetPiece(sp, state, attackingSide, matchup, rng)
           foulDetail.setPiece = sp
-          foulDetail.setPieceResult = { goal: spRes.goal }
+          foulDetail.setPieceResult = { goal: spRes.goal, shooterId: spRes.shooterId, attempted: spRes.attempted }
           if (spRes.goal) {
             goalScored = true
             if (attackingSide === 'home') state.score.home += 1

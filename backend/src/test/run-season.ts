@@ -5,9 +5,9 @@
 //   npx ts-node src/test/run-season.ts
 //   npx ts-node src/test/run-season.ts --seed 42
 
-import { LEAGUE_TEAMS } from '@/test/fixtures/league-teams'
-import { runMatch } from '@/engine/match'
-import type { MatchResult } from '@/types'
+import { LEAGUE_TEAMS } from '~/test/fixtures/league-teams'
+import { runMatch } from '~/engine/match'
+import type { MatchResult } from '~/types'
 
 // Read --seed from argv (used as a season-level salt). If omitted, a
 // random seed is rolled per run so the league plays out differently each

@@ -32,7 +32,7 @@ Four rules. Breaking any of them costs a future feature.
 ## Match shape
 
 - 7 supported formations: **4-3-3**, **4-4-2**, **4-2-3-1** (4-back); **5-3-2**, **5-4-1** (5-back); **3-5-2**, **3-4-3** (3-back). All wired through `FORMATION_SLOTS` / `ATTACKER_SLOTS` / `DEFENDER_SLOTS` / `FORMATION_ZONE_BIAS` in `constants.ts`. Adding another formation = extending those four tables.
-- 45 regular beats (2 in-game minutes each = 90 mins) + 1–4 stoppage beats.
+- 90 regular beats (1 in-game minute each = 90 mins) + 2–8 stoppage beats. Per-beat event probabilities are halved against the previous 45-beat × 2-minute calibration so per-match totals stay near targets.
 - **Auto-sub on injury** — the engine swaps in the best-affinity bench card via `mechanics/subs.ts` (red-carded players are NOT replaced; team plays a man down).
 - **Mid-match tactical adaptation** — `mechanics/tactics.ts` re-evaluates each team's mentality every beat after minute 60 (2-goal swing) or 75 (1-goal swing). Leading teams shift defensive, trailing teams attacking.
 - **Lineup + tactics cloned at match start** — `initializeMatchState` shallow-copies the input squads' `lineup` arrays and `tactics` so per-match auto-subs and adaptation don't leak into the caller's objects (important for season runners that reuse the same Squad across many matches).
@@ -113,7 +113,7 @@ docs/
   nextjs-frontend.md      future HTTP/SSE wiring guide (not built yet)
 ```
 
-Path alias `@/*` → `src/*` (configured in `tsconfig.json`, registered via `tsconfig-paths`).
+Path alias `~/*` → `src/*` (configured in `tsconfig.json`, registered via `tsconfig-paths`). The backend uses `~` instead of `@` because the sibling `frontend/` package uses `@` for its own `src/`, and webpack would otherwise alias-collide.
 
 ## Tuning targets (batch validation)
 

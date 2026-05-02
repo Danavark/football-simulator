@@ -1,0 +1,7 @@
+{
+  "name": "football",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Football card game — backend simulation engine + frontend prototype",
+  "workspaces": ["backend", "frontend"]
+}

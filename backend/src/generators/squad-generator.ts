@@ -19,12 +19,12 @@
 // nationalities (each card pulls from a random country pool); pin
 // `opts.country` to force a single-nationality squad.
 
-import { generateCard } from '@/generators/card-generator'
-import type { StatTier } from '@/generators/card-stats'
-import { FORMATION_SLOTS, POSITION_AFFINITY } from '@/consts/engine'
-import { computePositionFit } from '@/engine/stats'
-import { createRng, type RNG } from '@/lib/rng'
-import type { Card, Formation, LineupSlot, Mentality, Position, Squad, Tactics } from '@/types'
+import { generateCard } from '~/generators/card-generator'
+import type { StatTier } from '~/generators/card-stats'
+import { FORMATION_SLOTS, POSITION_AFFINITY } from '~/consts/engine'
+import { computePositionFit } from '~/engine/stats'
+import { createRng, type RNG } from '~/lib/rng'
+import type { Card, Formation, LineupSlot, Mentality, Position, Squad, Tactics } from '~/types'
 
 // Positions a "midfielder" slot in the pack-pull quota can be filled with.
 const MIDFIELD_POSITIONS: Position[] = ['CDM', 'CM', 'CAM', 'LM', 'RM']

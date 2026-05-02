@@ -6,10 +6,10 @@
 //   npx ts-node src/test/run-squad.ts --seed 42
 //   npx ts-node src/test/run-squad.ts --seed 42 --tier pro --name "FC United"
 
-import type { StatTier } from '@/generators/card-stats'
-import { generateSquad } from '@/generators/squad-generator'
-import { FORMATION_SLOTS } from '@/consts/engine'
-import type { Card, Formation } from '@/types'
+import type { StatTier } from '~/generators/card-stats'
+import { generateSquad } from '~/generators/squad-generator'
+import { FORMATION_SLOTS } from '~/consts/engine'
+import type { Card, Formation } from '~/types'
 
 type Args = { seed?: number; tier?: StatTier; name?: string }
 

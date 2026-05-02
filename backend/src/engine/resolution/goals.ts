@@ -1,9 +1,9 @@
 // Three-stage goal resolution: chance quality → shot accuracy → GK save.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { RNG } from '@/lib/rng'
-import { effective, getFatigueMultiplier } from '@/engine/stats'
-import type { Card, ChanceDetail, ChanceQuality, MatchState, PlayerMatchState, Side, Squad, ZoneMatchup } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { RNG } from '~/lib/rng'
+import { effective, getFatigueMultiplier } from '~/engine/stats'
+import type { Card, ChanceDetail, ChanceQuality, MatchState, PlayerMatchState, Side, Squad, ZoneMatchup } from '~/types'
 
 // Clamp helper used by the probability calculations.
 function clamp(v: number, min: number, max: number): number {

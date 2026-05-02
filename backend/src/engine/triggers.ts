@@ -4,8 +4,8 @@
 // event-driven defaults; CLI/UI/SSE callers compose them with their own
 // "user clicked pause" flag (Q13/Q14 from the design spec).
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { BeatResult, MatchState, PausePredicate, PauseReason, Side } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { BeatResult, MatchState, PausePredicate, PauseReason, Side } from '~/types'
 
 // Build the default trigger predicate. Per the locked design:
 //   • half_time — fires on the first beat with minute >= 46 (always)

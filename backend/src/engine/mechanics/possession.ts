@@ -1,8 +1,8 @@
 // Possession resolution — decides which team gets the next attacking beat.
 
-import { MIDFIELD_SLOTS, SIM_CONSTANTS } from '@/consts/engine'
-import { effective } from '@/engine/stats'
-import type { Card, MatchState, Mentality, PlayerMatchState, Side, Squad, Tactics, WeatherCondition } from '@/types'
+import { MIDFIELD_SLOTS, SIM_CONSTANTS } from '~/consts/engine'
+import { effective } from '~/engine/stats'
+import type { Card, MatchState, Mentality, PlayerMatchState, Side, Squad, Tactics, WeatherCondition } from '~/types'
 
 // Average "midfield quality" of a side: passing + positioning + dribbling
 // across the on-pitch midfielders for the given formation.

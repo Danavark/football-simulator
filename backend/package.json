@@ -1,8 +1,16 @@
 {
-  "name": "football-card-game-sim",
+  "name": "backend",
   "version": "0.1.0",
   "private": true,
   "description": "Football card game simulation testbed (CLI).",
+  "exports": {
+    "./engine/*": "./src/engine/*.ts",
+    "./types": "./src/types/index.ts",
+    "./types/*": "./src/types/*.ts",
+    "./commentary": "./src/commentary/index.ts",
+    "./consts/*": "./src/consts/*.ts",
+    "./test/fixtures/*": "./src/test/fixtures/*.ts"
+  },
   "scripts": {
     "single": "ts-node src/test/run-single.ts",
     "batch": "ts-node src/test/run-batch.ts",

@@ -3,11 +3,11 @@
 // block for the future pack shop / draft / progression systems; the team
 // generator builds whole 15-card squads from pre-supplied names instead.
 
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import { generateStatPotentials, generateStats, type StatTier } from '@/generators/card-stats'
-import { CARD_NAMES, type CountryNamePool } from '@/generators/card-names'
-import type { RNG } from '@/lib/rng'
-import type { Card, Position } from '@/types'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import { generateStatPotentials, generateStats, type StatTier } from '~/generators/card-stats'
+import { CARD_NAMES, type CountryNamePool } from '~/generators/card-names'
+import type { RNG } from '~/lib/rng'
+import type { Card, Position } from '~/types'
 
 // Position weights — outfielders show up roughly proportional to how many
 // slots they fill in a typical lineup. GKs are rarer (1 per 11). LM/RM are

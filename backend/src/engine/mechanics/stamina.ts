@@ -3,8 +3,8 @@
 // fitness flows out via PlayerSummary.endFitness for the caller to write
 // back to account state.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { Card, MatchState, Mentality, Side } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { Card, MatchState, Mentality, Side } from '~/types'
 
 // Mentality affects how much energy a team burns each beat.
 function mentalityDrain(m: Mentality): number {

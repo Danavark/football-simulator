@@ -2,7 +2,7 @@
 // post-goal reactions (late drama, equaliser, comeback), and the
 // one-off red-card reaction. Per Q16 / Q17 / Q23 / Q24 / Q25.
 
-import type { WeatherCondition } from '@/types'
+import type { WeatherCondition } from '~/types'
 
 // Kickoff lines — match opener.
 export const KICKOFF_LINES: ((home: string, away: string) => string)[] = [
@@ -47,7 +47,7 @@ export const HALF_TIME_HOME_TRAILING: ((h: string, a: string, hs: number, as: nu
 // Full-time — three sub-pools by result.
 export const FULL_TIME_HOME_WIN: ((h: string, a: string, hs: number, as: number) => string)[] = [
   (h, _a, hs, as) => `Full time! ${h} take it ${hs}-${as}.`,
-  (h, _a, _hs, _as) => `Full time. ${h} home with the win.`,
+  (h, _a, _hs, _as) => `Full time. ${h} with the win at home.`,
   (h, a, hs, as) => `And that's it — ${h} beat ${a} ${hs}-${as}.`
 ]
 

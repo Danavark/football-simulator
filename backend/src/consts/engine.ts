@@ -2,17 +2,18 @@
 // Sections: beat resolution, goal resolution, fouls, set pieces,
 // injuries, stamina, momentum, possession, ratings, formations, zones.
 
-import type { Formation, Position, Stats, StatWeights, WeatherCondition, Zone } from '@/types'
+import type { Formation, Position, Stats, StatWeights, WeatherCondition, Zone } from '~/types'
 
 export const SIM_CONSTANTS = {
   // Beat resolution: how attack/defense delta becomes a chance.
-  // Thresholds scaled down from the spec's defaults to keep total
-  // chances/match in range across our 45 beats per match.
+  // Thresholds scaled to fit our 90-beat (1 minute each) match — half
+  // the per-beat probability of when beats were 2 minutes long, so
+  // per-match chance counts stay in target range.
   SCALE_FACTOR: 18,
-  CHANCE_THRESHOLD: 0.23,
-  BUILDUP_THRESHOLD: 0.46,
+  CHANCE_THRESHOLD: 0.115,
+  BUILDUP_THRESHOLD: 0.23,
   INDIVIDUAL_BRILLIANCE_GAP: 15,
-  INDIVIDUAL_BRILLIANCE_CHANCE: 0.029,
+  INDIVIDUAL_BRILLIANCE_CHANCE: 0.0145,
 
   // Goal resolution
   // Note: spec values produced ~0.55-0.7 goals/match in batch testing.
@@ -28,9 +29,9 @@ export const SIM_CONSTANTS = {
   GK_MODIFIER_HALF: 0.46,
 
   // Fouls
-  // Spec base rate of 0.12 gave ~3 fouls/match — far below the 20-26 target.
-  // Tuned to land in range given our 45 beats per match.
-  BASE_FOUL_RATE: 0.49,
+  // Tuned for 90 beats per match (1 minute each). Halved from the
+  // 0.49-per-beat rate that worked for 45 beats × 2 mins.
+  BASE_FOUL_RATE: 0.245,
   FOUL_SKILL_WEIGHT: 0.002,
   FOUL_PHYS_BONUS: 0.015,
   FOUL_MENTALITY_ATTACKING: 0.015,
@@ -50,8 +51,11 @@ export const SIM_CONSTANTS = {
   PENALTY_CONVERSION_FACTOR: 0.85,
   PENALTY_CONVERSION_MIN: 0.65,
   PENALTY_CONVERSION_MAX: 0.9,
-  CORNER_AFTER_SAVE: 0.5,
-  CORNER_AFTER_BUILDUP: 0.2,
+  // Bumped after the wing-foul-as-corner mislabel was fixed: corners
+  // now only come from open-play (saves and buildups), so each path
+  // needs to fire more often to keep corners-per-match near target.
+  CORNER_AFTER_SAVE: 0.85,
+  CORNER_AFTER_BUILDUP: 0.7,
   CORNER_DELIVERY_WEIGHT: 0.4,
 
   // Injuries
@@ -60,7 +64,7 @@ export const SIM_CONSTANTS = {
   // foul-injury runs per foul (so those rates stay beat-independent).
   // Tuned after exposing previously-silent passive injuries that fired in
   // foul beats — the visible rate had been ~half the actual rate.
-  INJURY_BASE_RATE: 0.00012,
+  INJURY_BASE_RATE: 0.00006,
   INJURY_PRONENESS_WEIGHT: 0.0024,
   INJURY_FATIGUE_WEIGHT: 0.002,
   INJURY_FRAILTY_WEIGHT: 0.0012,
@@ -77,10 +81,10 @@ export const SIM_CONSTANTS = {
   //   • Most involved attacking-team forward: ends ~25%
   //   • Least involved defensive-team GK / cover: ends ~60%
   //   • Tier differentiation lives in FITNESS_STAT_DRAIN_FLOOR/CEIL below.
-  BASE_STAMINA_DRAIN: 0.9,
-  ACTION_STAMINA_DRAIN: 0.25,
-  MENTALITY_DRAIN_ATTACKING: 0.15,
-  MENTALITY_DRAIN_DEFENSIVE: -0.05,
+  BASE_STAMINA_DRAIN: 0.45,
+  ACTION_STAMINA_DRAIN: 0.125,
+  MENTALITY_DRAIN_ATTACKING: 0.075,
+  MENTALITY_DRAIN_DEFENSIVE: -0.025,
   // The drain divisor is `100 / clamp(FLOOR, CEIL, staminaStat)` — both
   // ends compressed so the curve only matters in the 60-70 band where most
   // outfielders sit. Floor at 60 stops rookie players from running out of
@@ -89,7 +93,7 @@ export const SIM_CONSTANTS = {
   FITNESS_STAT_DRAIN_FLOOR: 60,
   FITNESS_STAT_DRAIN_CEIL: 65,
   HALFTIME_RECOVERY: 10,
-  HALFTIME_BEAT: 23,
+  HALFTIME_BEAT: 45,
   GOAL_STAMINA_BOOST: 3,
 
   // Momentum: per-event swings and per-beat decay.
@@ -98,7 +102,7 @@ export const SIM_CONSTANTS = {
   MOMENTUM_CHANCE: 3,
   MOMENTUM_CHANCE_CONCEDED: -1,
   MOMENTUM_GOOD_DEFENSE: 1,
-  MOMENTUM_DECAY: 0.029,
+  MOMENTUM_DECAY: 0.0145,
   MOMENTUM_MIN: -20,
   MOMENTUM_MAX: 20,
 
@@ -118,7 +122,7 @@ export const SIM_CONSTANTS = {
   // head-to-head testing. These bonuses apply only when the attacking-
   // mentality team is in possession this beat — pure offensive payoff for
   // the risk being taken.
-  ATTACKING_CHANCE_THRESHOLD_BONUS: 0.08, // adds to CHANCE_THRESHOLD this beat
+  ATTACKING_CHANCE_THRESHOLD_BONUS: 0.04, // adds to CHANCE_THRESHOLD this beat
   ATTACKING_CLEAR_CUT_BONUS: 0.1, // adds to CLEAR_CUT_BASE in stage 1
 
   // Counter-attack defender penalty when opponent is attacking. Softened
@@ -129,12 +133,13 @@ export const SIM_CONSTANTS = {
   COUNTER_DEFENDER_POSITIONING_PENALTY: 8,
 
   // Beat pacing: minutes advanced per beat + stoppage range.
-  // Fixed 2 min/beat = exactly 45 beats per 90-minute match. Cleanest
-  // split and gives live mode the granularity it needs.
-  BEAT_MIN_MINUTES: 2,
-  BEAT_MAX_MINUTES: 2,
-  STOPPAGE_MIN_BEATS: 1,
-  STOPPAGE_MAX_BEATS: 4,
+  // Fixed 1 min/beat = 90 beats per 90-minute match. Per-beat event
+  // probabilities (chance, foul, injury) are halved against the prior
+  // 2-min/beat numbers so per-match totals stay near targets.
+  BEAT_MIN_MINUTES: 1,
+  BEAT_MAX_MINUTES: 1,
+  STOPPAGE_MIN_BEATS: 2,
+  STOPPAGE_MAX_BEATS: 8,
 
   // Match-rating deltas applied per event, plus the rating clamps.
   RATING_GOAL: 1.5,
@@ -176,6 +181,12 @@ export const SIM_CONSTANTS = {
   POSITION_FIT_TWO_AWAY: 0.92, // LB in CB slot
   POSITION_FIT_THREE_AWAY: 0.88, // RB in CB slot
   POSITION_FIT_UNRELATED: 0.7, // ST in CB slot — wholly out of role
+  // Outfielder ↔ keeper swap. Real-world an outfielder going in goal
+  // saves maybe 10-20% of what a real keeper would (and a keeper trying
+  // to score from open play is even worse). 0.3× makes the swap visibly
+  // catastrophic — clear-cut chances become near-certain goals against
+  // the makeshift keeper.
+  POSITION_FIT_GK_MISMATCH: 0.3,
 
   // Yellow-card-aware "safe mode" — cautious defenders pull out of
   // tackles, dropping their effective defending. Aggressive mode is the

@@ -11,9 +11,9 @@ import {
   WEATHER_MODS,
   ZONE_BASE_WEIGHTS,
   ZONE_MENTALITY_MODS
-} from '@/consts/engine'
-import type { RNG } from '@/lib/rng'
-import { effective, weightedScore } from '@/engine/stats'
+} from '~/consts/engine'
+import type { RNG } from '~/lib/rng'
+import { effective, weightedScore } from '~/engine/stats'
 import type {
   Card,
   EffectiveStats,
@@ -26,7 +26,7 @@ import type {
   WeatherCondition,
   Zone,
   ZoneMatchup
-} from '@/types'
+} from '~/types'
 
 const ALL_ZONES: Zone[] = ['left_wing', 'right_wing', 'centre', 'long_ball', 'counter']
 

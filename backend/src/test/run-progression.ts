@@ -7,16 +7,16 @@
 //   npx ts-node src/test/run-progression.ts
 //   npx ts-node src/test/run-progression.ts --seed 42 --matches 10
 
-import { applyAutoBoosts, type AutoBoostEvent } from '@/career/auto-boost'
-import { computeRoleBuffs, recordLegend } from '@/career/legends'
-import { processSquadInjuries, type InjuryEvent } from '@/career/injuries'
-import { spend, type XpPurchaseRequest } from '@/career/xp-spend'
-import { awardMatchXp } from '@/career/xp'
-import { testHome, testAway, testHomeTactics, testAwayTactics } from '@/test/fixtures/test-teams'
-import { applyFormUpdates } from '@/engine/mechanics/form'
-import { runMatch } from '@/engine/match'
-import { createRng } from '@/lib/rng'
-import type { Card, MatchInput, Profile, Squad } from '@/types'
+import { applyAutoBoosts, type AutoBoostEvent } from '~/career/auto-boost'
+import { computeRoleBuffs, recordLegend } from '~/career/legends'
+import { processSquadInjuries, type InjuryEvent } from '~/career/injuries'
+import { spend, type XpPurchaseRequest } from '~/career/xp-spend'
+import { awardMatchXp } from '~/career/xp'
+import { testHome, testAway, testHomeTactics, testAwayTactics } from '~/test/fixtures/test-teams'
+import { applyFormUpdates } from '~/engine/mechanics/form'
+import { runMatch } from '~/engine/match'
+import { createRng } from '~/lib/rng'
+import type { Card, MatchInput, Profile, Squad } from '~/types'
 
 function parseArgs(): { seed: number; matches: number } {
   const args = process.argv.slice(2)

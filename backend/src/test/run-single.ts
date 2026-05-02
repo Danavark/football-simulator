@@ -9,13 +9,13 @@
 //   npx ts-node src/test/run-single.ts --live --pause --scenario mentality
 //   npx ts-node src/test/run-single.ts --live --pause --scenario formation
 
-import { testHome, testAway, testHomeTactics, testAwayTactics } from '@/test/fixtures/test-teams'
-import { type Commentator, createCommentator } from '@/commentary'
-import { SIM_CONSTANTS } from '@/consts/engine'
-import { runMatch, runMatchLive, runMatchPausable } from '@/engine/match'
-import { suggestLineup } from '@/engine/decisions'
-import { commonPauseTriggers } from '@/engine/triggers'
-import { createRng } from '@/lib/rng'
+import { testHome, testAway, testHomeTactics, testAwayTactics } from '~/test/fixtures/test-teams'
+import { type Commentator, createCommentator } from '~/commentary'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import { runMatch, runMatchLive, runMatchPausable } from '~/engine/match'
+import { suggestLineup } from '~/engine/decisions'
+import { commonPauseTriggers } from '~/engine/triggers'
+import { createRng } from '~/lib/rng'
 import type {
   Card,
   Formation,
@@ -27,7 +27,7 @@ import type {
   PlayerMatchState,
   Side,
   Squad
-} from '@/types'
+} from '~/types'
 
 type Scenario = 'none' | 'sub' | 'mentality' | 'formation'
 

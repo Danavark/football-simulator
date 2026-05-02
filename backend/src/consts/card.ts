@@ -2,7 +2,7 @@
 // position. Mirrors the SIM_CONSTANTS / PROGRESSION_CONSTANTS pattern —
 // every magic number that controls card generation lives here.
 
-import type { Position, Stats } from '@/types'
+import type { Position, Stats } from '~/types'
 
 // Tier knob applied at generation. Shifts every rolled stat up or down so
 // rookie/pro/super/legend teams sit predictably below/above the semipro

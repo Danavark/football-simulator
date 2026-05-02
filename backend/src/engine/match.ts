@@ -4,13 +4,13 @@
 // MatchInput.shouldPause flags an event — the integration point for the
 // future pause / decision UI.
 
-import { ROLE_BY_POSITION } from '@/consts/career'
-import { FORMATION_SLOTS, SIM_CONSTANTS, WEATHER_PROBABILITIES } from '@/consts/engine'
-import { processBeat } from '@/engine/beat'
-import { applyDecisions } from '@/engine/decisions'
-import { adaptTactics } from '@/engine/mechanics/tactics'
-import { createRng, type RNG } from '@/lib/rng'
-import { computePositionFit } from '@/engine/stats'
+import { ROLE_BY_POSITION } from '~/consts/career'
+import { FORMATION_SLOTS, SIM_CONSTANTS, WEATHER_PROBABILITIES } from '~/consts/engine'
+import { processBeat } from '~/engine/beat'
+import { applyDecisions } from '~/engine/decisions'
+import { adaptTactics } from '~/engine/mechanics/tactics'
+import { createRng, type RNG } from '~/lib/rng'
+import { computePositionFit } from '~/engine/stats'
 import type {
   MatchDecisions,
   MatchInput,
@@ -26,7 +26,7 @@ import type {
   Tactics,
   TeamTotals,
   WeatherCondition
-} from '@/types'
+} from '~/types'
 
 // Default — no legends, all roles read at full strength.
 const NO_LEGEND_BUFFS: RoleBuffs = { GK: 1, DEF: 1, MID: 1, ATT: 1 }
@@ -134,6 +134,7 @@ function initPlayers(
       startFitness,
       isOnPitch: onPitchIds.has(c.id),
       isInjured: false,
+      hasBeenSubbedOff: false,
       yellowCards: 0,
       redCard: false,
       mode: 'normal',
@@ -159,7 +160,7 @@ export function runMatch(input: MatchInput): MatchResult {
   // 45 beats for 90 minutes (2 min/beat fixed), plus 1–4 stoppage beats.
   // Run while the clock has not reached full time and we have beats left.
   // We use a soft target on beat count to avoid runaway loops.
-  while (state.minute < 90 && state.beat < 50) {
+  while (state.minute < 90 && state.beat < 95) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -167,7 +168,7 @@ export function runMatch(input: MatchInput): MatchResult {
 
   // Stoppage time: a few extra beats after 90.
   const stoppage = rollStoppage(rng)
-  for (let i = 0; i < stoppage && state.beat < 55; i++) {
+  for (let i = 0; i < stoppage && state.beat < 105; i++) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -187,7 +188,7 @@ export async function runMatchLive(
   const rng = createRng(seed)
   let state = initializeMatchState(input, rng)
 
-  while (state.minute < 90 && state.beat < 50) {
+  while (state.minute < 90 && state.beat < 95) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -195,7 +196,7 @@ export async function runMatchLive(
   }
 
   const stoppage = rollStoppage(rng)
-  for (let i = 0; i < stoppage && state.beat < 55; i++) {
+  for (let i = 0; i < stoppage && state.beat < 105; i++) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -245,7 +246,7 @@ export async function* runMatchPausable(
   // (yield is generator-scoped so the trigger block is duplicated across
   // the regular and stoppage loops rather than extracted to a helper.)
 
-  while (state.minute < 90 && state.beat < 50) {
+  while (state.minute < 90 && state.beat < 95) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -263,7 +264,7 @@ export async function* runMatchPausable(
   }
 
   const stoppage = rollStoppage(rng)
-  for (let i = 0; i < stoppage && state.beat < 55; i++) {
+  for (let i = 0; i < stoppage && state.beat < 105; i++) {
     state = processBeat(state, rng)
     adaptTactics(state)
     state.rngState = rng.getState()
@@ -358,7 +359,9 @@ function buildResult(state: MatchState): MatchResult {
     }
     if (ev.foulDetail?.card === 'red') totals.redCards += 1
     if (ev.foulDetail && ev.foulDetail.fouler !== '') totals.fouls += 1
-    if (ev.foulDetail?.setPiece === 'corner') totals.corners += 1
+    // Open-play corners only — wing fouls now produce free kicks, never
+    // corners. (cornerTaken is the only place real corners come from.)
+    if (ev.cornerTaken) totals.corners += 1
     if (ev.foulDetail?.setPiece === 'penalty') totals.penalties += 1
   }
 
@@ -403,15 +406,27 @@ function buildTeamTotals(events: BeatResult[], summaries: PlayerSummary[]): { ho
     if (ev.attackingTeam === 'home') homeBeats += 1
     else awayBeats += 1
 
-    // Shots from open-play chances. Set-piece shots aren't counted here
-    // since on/off-target detail isn't tracked for them.
+    // Shots from open-play chances.
     if (ev.outcome === 'chance' && ev.chanceDetail) {
       t.shots += 1
       if (ev.chanceDetail.onTarget) t.shotsOnTarget += 1
       else t.shotsOffTarget += 1
     }
-    // Corners: foul-derived (recorded on foulDetail) + open-play (cornerTaken).
-    if (ev.foulDetail?.setPiece === 'corner') t.corners += 1
+    // Set-piece shots — penalty + free kick (centre or wing). The
+    // `attempted` flag gates wing free kicks where the cross-style
+    // delivery may not have produced a header. Engine doesn't expose
+    // on/off-target detail for set-pieces, so we approximate:
+    // scored → on target, attempted-but-no-goal → off target.
+    if (
+      (ev.foulDetail?.setPiece === 'penalty' || ev.foulDetail?.setPiece === 'free_kick') &&
+      ev.foulDetail.setPieceResult?.attempted
+    ) {
+      t.shots += 1
+      if (ev.foulDetail.setPieceResult.goal) t.shotsOnTarget += 1
+      else t.shotsOffTarget += 1
+    }
+    // Corners: open-play only. Wing fouls are now classified as free
+    // kicks (not corners), so foulDetail.setPiece is never 'corner'.
     if (ev.cornerTaken) t.corners += 1
     if (ev.foulDetail?.setPiece === 'free_kick') t.freeKicks += 1
     if (ev.foulDetail?.setPiece === 'penalty') t.penalties += 1

@@ -1,6 +1,6 @@
 // Squad and tactics — how a set of cards is fielded for a match.
 
-import type { Card } from '@/types/card'
+import type { Card } from '~/types/card'
 
 // Supported formations: three 4-back, two 5-back, two 3-back.
 export type Formation = '4-3-3' | '4-4-2' | '4-2-3-1' | '5-3-2' | '5-4-1' | '3-5-2' | '3-4-3'

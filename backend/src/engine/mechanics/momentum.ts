@@ -1,7 +1,7 @@
 // Momentum tracking — a single -20..+20 number that biases possession
 // and chance quality. Positive = home momentum.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
+import { SIM_CONSTANTS } from '~/consts/engine'
 
 // Keep momentum within the configured ±range.
 export function clampMomentum(m: number): number {

@@ -5,8 +5,8 @@
 //
 // Spec: docs/06_progression-and-balance.md §7.
 
-import { PROGRESSION_CONSTANTS, ROLE_BY_POSITION } from '@/consts/career'
-import type { Card, Legend, Profile, RoleBuffs, RoleGroup } from '@/types'
+import { PROGRESSION_CONSTANTS, ROLE_BY_POSITION } from '~/consts/career'
+import type { Card, Legend, Profile, RoleBuffs, RoleGroup } from '~/types'
 
 // Read the buff for a legend at a given stack position (0-indexed). Beyond
 // the explicit array, all further entries reuse the last value.

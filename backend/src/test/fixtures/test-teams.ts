@@ -6,7 +6,7 @@
 // — this is the same shape AI teams will take in career mode, so the
 // runners exercise the realistic case.
 
-import { generateSquad } from '@/generators/squad-generator'
+import { generateSquad } from '~/generators/squad-generator'
 
 const home = generateSquad({
   name: 'Manchester United',

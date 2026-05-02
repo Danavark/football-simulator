@@ -9,10 +9,10 @@
 //   npx ts-node src/test/run-pausable.ts --scenario mentality --user-side away
 //   npx ts-node src/test/run-pausable.ts --scenario formation --seed 12345
 
-import { testHome, testAway, testHomeTactics, testAwayTactics } from '@/test/fixtures/test-teams'
-import { commonPauseTriggers } from '@/engine/triggers'
-import { runMatchPausable } from '@/engine/match'
-import { suggestLineup } from '@/engine/decisions'
+import { testHome, testAway, testHomeTactics, testAwayTactics } from '~/test/fixtures/test-teams'
+import { commonPauseTriggers } from '~/engine/triggers'
+import { runMatchPausable } from '~/engine/match'
+import { suggestLineup } from '~/engine/decisions'
 import type {
   Formation,
   MatchDecisions,
@@ -21,7 +21,7 @@ import type {
   PlayerMatchState,
   Side,
   Squad
-} from '@/types'
+} from '~/types'
 
 type Scenario = 'none' | 'sub' | 'mentality' | 'formation'
 

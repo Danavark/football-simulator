@@ -1,10 +1,10 @@
 // Set piece resolution — free kicks, penalties, corners. Each comes from
 // either a foul or a buildup/save during open play.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { RNG } from '@/lib/rng'
-import { effective, getFatigueMultiplier } from '@/engine/stats'
-import type { Card, MatchState, PlayerMatchState, SetPieceKind, Side, Squad, Zone, ZoneMatchup } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { RNG } from '~/lib/rng'
+import { effective, getFatigueMultiplier } from '~/engine/stats'
+import type { Card, MatchState, PlayerMatchState, SetPieceKind, Side, Squad, Zone, ZoneMatchup } from '~/types'
 
 // Fetch the on-pitch GK (slot 0) for a squad, or null.
 function findGK(squad: Squad, states: PlayerMatchState[]): { card: Card; state: PlayerMatchState } | null {
@@ -21,19 +21,32 @@ export type SetPieceResolution = {
   kind: SetPieceKind
   goal: boolean
   shooterId?: string
+  // True if a shot was actually taken (stats use this to avoid counting
+  // crosses that produced no header attempt). Always true for direct
+  // shots — penalty and centre free kick. For corners / wing crosses,
+  // false when resolveCorner's header-creation roll didn't fire.
+  attempted: boolean
 }
 
 // Determine what set piece (if any) results from a foul in the given zone.
+// Wing fouls produce free kicks (not corners) — corners can only be
+// awarded for defensive touches over the goal line, which the engine
+// models via open-play cornerTaken in beat.ts. The wing free kick is
+// resolved cross-style internally (same logic as a corner) but stays
+// labeled as a free kick in foulDetail.setPiece for accurate stats.
 export function classifySetPiece(zone: Zone, rng: RNG): SetPieceKind | null {
   // Penalty: rare, regardless of zone (counts as the foul being inside the box).
   if (rng.chance(SIM_CONSTANTS.PENALTY_FRACTION_OF_FOUL)) return 'penalty'
   if (zone === 'centre') return 'free_kick'
-  if (zone === 'left_wing' || zone === 'right_wing') return 'corner'
+  if (zone === 'left_wing' || zone === 'right_wing') return 'free_kick'
   return null
 }
 
 // Dispatch to the right resolver based on set piece kind. Falls through
-// to a no-goal result if the matchup has no attackers left.
+// to a no-goal result if the matchup has no attackers left. For free
+// kicks we branch on zone — centre is a direct shot, wing is a cross /
+// header attempt (resolveCorner internally), since that's how wing
+// free kicks are typically taken in real football.
 export function resolveSetPiece(
   kind: SetPieceKind,
   state: MatchState,
@@ -41,10 +54,17 @@ export function resolveSetPiece(
   matchup: ZoneMatchup,
   rng: RNG
 ): SetPieceResolution {
-  // If a sending-off / injury wiped out the matchup, no set piece can be taken.
-  if (matchup.attackers.length === 0) return { kind, goal: false }
+  if (matchup.attackers.length === 0) return { kind, goal: false, attempted: false }
   if (kind === 'penalty') return resolvePenalty(state, attackingSide, matchup, rng)
-  if (kind === 'free_kick') return resolveFreeKick(state, attackingSide, matchup, rng)
+  if (kind === 'free_kick') {
+    if (matchup.zone === 'left_wing' || matchup.zone === 'right_wing') {
+      // Cross-style delivery — internally uses resolveCorner but stays
+      // labeled as a free kick on the way out.
+      const r = resolveCorner(state, attackingSide, matchup, rng)
+      return { ...r, kind: 'free_kick' }
+    }
+    return resolveFreeKick(state, attackingSide, matchup, rng)
+  }
   return resolveCorner(state, attackingSide, matchup, rng)
 }
 
@@ -87,7 +107,8 @@ function resolvePenalty(state: MatchState, attackingSide: Side, matchup: ZoneMat
   return {
     kind: 'penalty',
     goal: rng.chance(conv),
-    shooterId: shooter.card.id
+    shooterId: shooter.card.id,
+    attempted: true
   }
 }
 
@@ -111,7 +132,7 @@ function resolveFreeKick(state: MatchState, attackingSide: Side, matchup: ZoneMa
     0.03,
     0.4
   )
-  return { kind: 'free_kick', goal: rng.chance(goalChance), shooterId: shooter.card.id }
+  return { kind: 'free_kick', goal: rng.chance(goalChance), shooterId: shooter.card.id, attempted: true }
 }
 
 // Corner / wing free kick: delivery quality + best aerial threat vs. CBs,
@@ -159,8 +180,10 @@ function resolveCorner(state: MatchState, attackingSide: Side, matchup: ZoneMatc
 
   let goal = false
   let shooterId: string | undefined
+  let attempted = false
   if (rng.chance(cornerChance)) {
     // Resolve as a header chance: shoot vs GK.
+    attempted = true
     const gk = findGK(defSquad, defStates)
     let gkSaveProb = 0.6
     if (gk) {
@@ -182,5 +205,5 @@ function resolveCorner(state: MatchState, attackingSide: Side, matchup: ZoneMatc
     goal = !rng.chance(gkSaveProb * 0.85)
   }
 
-  return { kind: 'corner', goal, shooterId }
+  return { kind: 'corner', goal, shooterId, attempted }
 }

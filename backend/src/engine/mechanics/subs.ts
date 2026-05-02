@@ -3,9 +3,9 @@
 // football rule). When the bench is exhausted of suitable cover, the slot
 // stays empty and the team plays short for the rest of the match.
 
-import { FORMATION_SLOTS, POSITION_AFFINITY } from '@/consts/engine'
-import { computePositionFit } from '@/engine/stats'
-import type { Card, MatchState, Side } from '@/types'
+import { FORMATION_SLOTS, POSITION_AFFINITY } from '~/consts/engine'
+import { computePositionFit } from '~/engine/stats'
+import type { Card, MatchState, Side } from '~/types'
 
 // Bring on a bench player to fill the slot a card just vacated. The
 // candidate is picked using the position-affinity ladder (exact match

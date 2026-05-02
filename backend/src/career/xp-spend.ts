@@ -13,9 +13,9 @@
 //
 // Spec: docs/06_progression-and-balance.md §2 (stat upgrade), §5 (heal).
 
-import { applyStatBoost, statAtPotential } from '@/career/auto-boost'
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { Card, Profile, Stats } from '@/types'
+import { applyStatBoost, statAtPotential } from '~/career/auto-boost'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { Card, Profile, Stats } from '~/types'
 
 // Discriminated union — every purchase kind is a variant. Easy to extend.
 export type XpPurchaseRequest =

@@ -7,7 +7,7 @@
 // constant. Same engine seed → same prose. Adding new lines to a pool
 // only affects commentary, not match logic.
 
-import { createRng, type RNG } from '@/lib/rng'
+import { createRng, type RNG } from '~/lib/rng'
 import {
   BUILDUP_LINES,
   CHANCE_LINES,
@@ -16,8 +16,8 @@ import {
   NOTHING_LINES,
   OFF_TARGET_LINES,
   SAVE_LINES
-} from '@/commentary/lines'
-import { DOWN_TO_TEN_FLAVOUR, MODIFIERS, type ScoreState, type TimeBucket } from '@/commentary/modifiers'
+} from '~/commentary/lines'
+import { DOWN_TO_TEN_FLAVOUR, MODIFIERS, type ScoreState, type TimeBucket } from '~/commentary/modifiers'
 import {
   COMEBACK_LEAD_REACTIONS,
   EQUALISER_REACTIONS,
@@ -32,9 +32,9 @@ import {
   RED_CARD_REACTIONS,
   STOPPAGE_ANNOUNCEMENT,
   WEATHER_KICKOFF
-} from '@/commentary/special'
-import { zonePhrase } from '@/commentary/zone-phrase'
-import type { BeatResult, MatchResult, Outcome, Side, Squad, WeatherCondition } from '@/types'
+} from '~/commentary/special'
+import { zonePhrase } from '~/commentary/zone-phrase'
+import type { BeatResult, MatchResult, Outcome, Side, Squad, WeatherCondition } from '~/types'
 
 // Q12 — last-N pool indices kept to bias picks away from repeats.
 const RECENT_WINDOW = 8
@@ -195,7 +195,7 @@ export function createCommentator(engineSeed: number): Commentator {
         if (c.assister) leadIn += ` Set up by ${nameOf(atkSquad, c.assister)}.`
         lines.push(leadIn)
         if (c.goal) {
-          lines.push(`  ${pick(GOAL_LINES)(shooter)}`)
+          lines.push(`  ${pick(GOAL_LINES)(shooter, atkName)}`)
           reactToGoal(atk, atkName, ev.minute, lines)
         } else if (c.saved) {
           lines.push(`  ${pick(SAVE_LINES)(shooter, gkName(defSquad))}`)
@@ -219,26 +219,35 @@ export function createCommentator(engineSeed: number): Commentator {
         const victimSquad = victimSide === 'home' ? homeSquad : awaySquad
         const foulerName = foulerSide ? nameOf(foulerSquad, f.fouler) : f.fouler
         const victimName = victimSide ? nameOf(victimSquad, f.victim) : f.victim
+        const foulerTeam = foulerSide === 'home' ? homeSquad.name : awaySquad.name
         lines.push(`  ${pick(FOUL_LINES)(foulerName, victimName)}`)
         if (f.card === 'yellow') {
-          lines.push(`  🟨 Yellow card — ${foulerName}.`)
+          lines.push(`  🟨 Yellow card — ${foulerName} (${foulerTeam}).`)
         } else if (f.card === 'second_yellow' || f.card === 'red') {
           const symbol = f.card === 'second_yellow' ? '🟨🟥 Second yellow' : '🟥 Red card'
-          lines.push(`  ${symbol} — ${foulerName} is sent off!`)
+          lines.push(`  ${symbol} — ${foulerName} (${foulerTeam}) is sent off!`)
           if (foulerSide) {
             sentOff[foulerSide] += 1
-            const teamName = foulerSide === 'home' ? homeSquad.name : awaySquad.name
-            lines.push(`  ${pick(RED_CARD_REACTIONS)(teamName)}`)
+            lines.push(`  ${pick(RED_CARD_REACTIONS)(foulerTeam)}`)
           }
         }
         if (f.injury) {
           lines.push(`  🏥 ${victimName} is injured and leaves the field.`)
         }
         if (f.setPiece) {
-          const sp =
-            f.setPiece === 'free_kick' ? 'Free kick' : f.setPiece === 'penalty' ? 'Penalty' : 'Corner-style cross'
+          // 'corner' is no longer produced from fouls (those are now
+          // labeled free_kick — wing fouls are wide free kicks, not
+          // corners). The 'corner' kind only appears as the open-play
+          // setPieceResult inside cornerTaken handling, which doesn't
+          // come through this commentary branch.
+          const sp = f.setPiece === 'free_kick' ? 'Free kick' : 'Penalty'
           const isGoal = !!f.setPieceResult?.goal
-          lines.push(`  ${sp}${isGoal ? ' — ⚽️ GOAL!' : ' — no goal.'}`)
+          // Set-piece goals attribute via setPieceResult.shooterId (now
+          // populated by the engine). Fall back to the team if missing.
+          const shooterId = f.setPieceResult?.shooterId ?? ev.chanceDetail?.shooter
+          const shooter = shooterId ? nameOf(atkSquad, shooterId) : null
+          const goalTag = shooter ? ` — ⚽️ GOAL by ${shooter} (${atkName})!` : ` — ⚽️ GOAL for ${atkName}!`
+          lines.push(`  ${sp}${isGoal ? goalTag : ' — no goal.'}`)
           if (isGoal) reactToGoal(atk, atkName, ev.minute, lines)
         }
       }

@@ -8,8 +8,8 @@
 // reshuffle (slot indices differ between formations and the right
 // reshuffle is a UX call). Use suggestLineup as a default UI helper.
 
-import { FORMATION_SLOTS } from '@/consts/engine'
-import { computePositionFit } from '@/engine/stats'
+import { FORMATION_SLOTS } from '~/consts/engine'
+import { computePositionFit } from '~/engine/stats'
 import type {
   Card,
   Formation,
@@ -21,7 +21,7 @@ import type {
   Side,
   Squad,
   Tactics
-} from '@/types'
+} from '~/types'
 
 const DEFAULT_SUBS_ALLOWED = 5
 
@@ -92,9 +92,13 @@ function applySubs(
     if (onState.isInjured || onState.redCard) {
       throw new Error(`applySubs: cardId ${on} is injured or sent off — cannot bring on`)
     }
+    if (onState.hasBeenSubbedOff) {
+      throw new Error(`applySubs: cardId ${on} has already been substituted off — football rule, no return`)
+    }
 
     const offState = players.find((p) => p.cardId === off)!
     offState.isOnPitch = false
+    offState.hasBeenSubbedOff = true
 
     slotInfo.cardId = on
     onState.isOnPitch = true

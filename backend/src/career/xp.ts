@@ -4,8 +4,8 @@
 //
 // Spec: docs/06_progression-and-balance.md §2.
 
-import { ROLE_BY_POSITION, PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { MatchResult, Profile, Side } from '@/types'
+import { ROLE_BY_POSITION, PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { MatchResult, Profile, Side } from '~/types'
 
 // Itemised breakdown of a match's XP — useful for showing the user where
 // their XP came from.

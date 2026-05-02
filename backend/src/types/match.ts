@@ -1,9 +1,9 @@
 // Match-engine types — input, beat-by-beat state, output. Everything
 // runMatch / processBeat / runMatchLive touches is here.
 
-import type { Card, Position, Stats } from '@/types/card'
-import type { RoleBuffs } from '@/types/career'
-import type { Formation, LineupSlot, Mentality, Squad, Tactics } from '@/types/squad'
+import type { Card, Position, Stats } from '~/types/card'
+import type { RoleBuffs } from '~/types/career'
+import type { Formation, LineupSlot, Mentality, Squad, Tactics } from '~/types/squad'
 
 // Pitch / weather conditions rolled pre-match. Affects stat reads, injury
 // rates, and zone-selection bias.
@@ -112,6 +112,11 @@ export type PlayerMatchState = {
   startFitness: number
   isOnPitch: boolean
   isInjured: boolean
+  // True once the player has been subbed off (user-initiated sub or
+  // auto-sub on injury). Football's no-return-after-sub rule — flagged
+  // players cannot be brought back on even if isOnPitch is now false
+  // and they're not injured. Set in applySubs / tryAutoSub.
+  hasBeenSubbedOff: boolean
   yellowCards: number
   redCard: boolean
   mode: 'normal' | 'aggressive' | 'safe'
@@ -150,7 +155,7 @@ export type FoulDetail = {
   card?: CardColour
   injury: boolean
   setPiece?: SetPieceKind
-  setPieceResult?: { goal: boolean }
+  setPieceResult?: { goal: boolean; shooterId?: string; attempted?: boolean }
 }
 
 // One entry in the match log — what happened during a single beat.

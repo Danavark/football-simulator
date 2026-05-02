@@ -5,7 +5,7 @@
 //     fatigue → chemistry → form → position-fit → legend → weather (per-stat) → mode (per-stat)
 // Future modifiers slot in here.
 
-import { POSITION_AFFINITY, SIM_CONSTANTS, WEATHER_MODS } from '@/consts/engine'
+import { POSITION_AFFINITY, SIM_CONSTANTS, WEATHER_MODS } from '~/consts/engine'
 import type {
   Card,
   EffectiveStats,
@@ -15,7 +15,7 @@ import type {
   Stats,
   StatWeights,
   WeatherCondition
-} from '@/types'
+} from '~/types'
 
 // Map remaining stamina (0–100) to a flat multiplier on outfield stats.
 export function getFatigueMultiplier(stamina: number): number {
@@ -38,6 +38,11 @@ function getChemistryMultiplier(chemistry: number): number {
 // the stored result lives on PlayerMatchState.positionFit.
 export function computePositionFit(actual: Position, expected: Position): number {
   if (actual === expected) return SIM_CONSTANTS.POSITION_FIT_EXACT
+  // GK mismatch — outfielder in goal or keeper in any outfield slot.
+  // Far harsher than regular "unrelated" because the role disparity is
+  // qualitative, not just positional. (Auto-sub already prevents this
+  // happening organically; only user-driven lineup swaps land here.)
+  if (actual === 'GK' || expected === 'GK') return SIM_CONSTANTS.POSITION_FIT_GK_MISMATCH
   const ladder = POSITION_AFFINITY[expected]
   const idx = ladder.indexOf(actual)
   if (idx === -1) return SIM_CONSTANTS.POSITION_FIT_UNRELATED

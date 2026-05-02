@@ -15,7 +15,7 @@
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "~/*": ["src/*"]
     }
   },
   "ts-node": {

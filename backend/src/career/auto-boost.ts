@@ -5,10 +5,10 @@
 //
 // Spec: docs/06_progression-and-balance.md §3.
 
-import { POSITION_PROFILE } from '@/consts/card'
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { RNG } from '@/lib/rng'
-import type { Card, MatchResult, Stats, Squad } from '@/types'
+import { POSITION_PROFILE } from '~/consts/card'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { RNG } from '~/lib/rng'
+import type { Card, MatchResult, Stats, Squad } from '~/types'
 
 // Match rating → base auto-boost chance (before level damping).
 function baseChance(rating: number): number {

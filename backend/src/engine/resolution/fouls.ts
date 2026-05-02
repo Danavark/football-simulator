@@ -1,9 +1,9 @@
 // Foul, card and injury rolls — run once per beat independently of the
 // main attack/defense outcome.
 
-import { SIM_CONSTANTS, WEATHER_MODS } from '@/consts/engine'
-import type { RNG } from '@/lib/rng'
-import type { Card, Mentality, PlayerMatchState, WeatherCondition, Zone, ZoneMatchup } from '@/types'
+import { SIM_CONSTANTS, WEATHER_MODS } from '~/consts/engine'
+import type { RNG } from '~/lib/rng'
+import type { Card, Mentality, PlayerMatchState, WeatherCondition, Zone, ZoneMatchup } from '~/types'
 
 export type FoulRollInput = {
   matchup: ZoneMatchup

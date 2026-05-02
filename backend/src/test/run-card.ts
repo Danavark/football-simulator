@@ -7,10 +7,10 @@
 //   npx ts-node src/test/run-card.ts --seed 42 --count 3 --position ST
 //   npx ts-node src/test/run-card.ts --tier pro --country Spain
 
-import { generateCard } from '@/generators/card-generator'
-import type { StatTier } from '@/generators/card-stats'
-import { createRng } from '@/lib/rng'
-import type { Card, Position } from '@/types'
+import { generateCard } from '~/generators/card-generator'
+import type { StatTier } from '~/generators/card-stats'
+import { createRng } from '~/lib/rng'
+import type { Card, Position } from '~/types'
 
 type Args = {
   seed: number

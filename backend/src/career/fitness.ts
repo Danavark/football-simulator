@@ -8,8 +8,8 @@
 // from their drained state. Recovery scales with the card's stamina stat
 // (Q8 threshold formula): max(0, (staminaStat - 30) × 0.6), capped at 100.
 
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { Card, Squad } from '@/types'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { Card, Squad } from '~/types'
 
 // How much fitness this card regains in a single recovery cycle. Earned
 // stat boosts on stamina count, since they represent persistent character

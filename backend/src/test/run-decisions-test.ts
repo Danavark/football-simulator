@@ -7,9 +7,9 @@
 // We drive the engine via runMatchPausable with a custom predicate that
 // pauses on the very first beat, run our decision payload, and assert.
 
-import { testHome, testAway, testHomeTactics, testAwayTactics } from '@/test/fixtures/test-teams'
-import { runMatchPausable } from '@/engine/match'
-import type { LineupSlot, MatchInput, PauseCheckpoint } from '@/types'
+import { testHome, testAway, testHomeTactics, testAwayTactics } from '~/test/fixtures/test-teams'
+import { runMatchPausable } from '~/engine/match'
+import type { LineupSlot, MatchInput, PauseCheckpoint } from '~/types'
 
 function assert(cond: boolean, msg: string): void {
   if (!cond) {
@@ -130,9 +130,52 @@ async function testSubbedOffCannotReturn(): Promise<void> {
   // The throw kills the generator; nothing more to do.
 }
 
+// 3) subbed-off player cannot return via a *fresh* sub later.
+async function testSubbedOffCannotReturnViaSub(): Promise<void> {
+  console.log('\n--- testSubbedOffCannotReturnViaSub ---')
+  const input: MatchInput = {
+    homeSquad: testHome,
+    awaySquad: testAway,
+    homeTactics: testHomeTactics,
+    awayTactics: testAwayTactics,
+    seed: 12345,
+    userSide: 'home',
+    shouldPause: () => 'user_request'
+  }
+  const gen = runMatchPausable(input)
+  const r1 = await gen.next()
+  if (r1.done) throw new Error('match ended before first pause')
+
+  const lineup = r1.value.state.homeSquad.lineup
+  const offCard = lineup.find((l) => l.slot === 10)!.cardId
+  const players = r1.value.state.players.home
+  const benchA = players.filter((p) => !p.isOnPitch && !p.isInjured && !p.redCard)
+  if (benchA.length < 2) throw new Error('need at least 2 bench cards')
+  const firstOn = benchA[0].cardId
+  const secondBench = benchA[1].cardId
+
+  // Pause 1: sub offCard out, firstOn in.
+  const r2 = await gen.next({ subs: [{ off: offCard, on: firstOn }] })
+  if (r2.done) throw new Error('match ended after first sub')
+
+  // Pause 2: try to bring offCard BACK on by subbing firstOn off + offCard on.
+  // Should throw because offCard.hasBeenSubbedOff is now true.
+  let threw = false
+  try {
+    await gen.next({ subs: [{ off: firstOn, on: offCard }] })
+  } catch (e) {
+    threw = true
+    const msg = (e as Error).message
+    console.log(`  threw: ${msg}`)
+    assert(/already been substituted off|football rule/i.test(msg), 'error message mentions sub rule')
+  }
+  assert(threw, 'subbed-off player rejected when fresh sub tries to bring them back')
+}
+
 async function main(): Promise<void> {
   await testLineupAlone()
   await testSubbedOffCannotReturn()
+  await testSubbedOffCannotReturnViaSub()
   console.log('\nAll decision tests passed.')
 }
 

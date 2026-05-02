@@ -5,8 +5,8 @@
 // a goal that closes the gap can revert a team back toward neutral on
 // the next beat.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { MatchState } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { MatchState } from '~/types'
 
 // Re-evaluate both teams' mentalities given the current minute, score and
 // on-pitch counts. Mutates state.{home,away}Tactics.mentality (those have

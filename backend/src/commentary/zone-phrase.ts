@@ -3,7 +3,7 @@
 // Originally lived inline in run-single.ts; lifted into the commentary
 // module so all line pools can share it.
 
-import type { Zone } from '@/types'
+import type { Zone } from '~/types'
 
 export type ZonePhrase = {
   push: string // verb phrase: "push down the left"

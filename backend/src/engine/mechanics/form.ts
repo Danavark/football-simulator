@@ -8,8 +8,8 @@
 // progression systems) opt-in to form persistence by invoking
 // `applyFormUpdates(homeSquad, awaySquad, result)` between matches.
 
-import { SIM_CONSTANTS } from '@/consts/engine'
-import type { Card, MatchResult, Squad } from '@/types'
+import { SIM_CONSTANTS } from '~/consts/engine'
+import type { Card, MatchResult, Squad } from '~/types'
 
 // Convert a match rating to a form delta. A 6.0 rating (the starting
 // rating, "average game") produces 0 change. 9.0 → +0.06, 4.0 → −0.04.

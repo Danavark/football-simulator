@@ -5,7 +5,7 @@
 // Voice note: goal lines are deliberately amped (caps + exclamations)
 // because Q17/Q18 wired big-moment register into the GOAL pool itself.
 
-import type { ZonePhrase } from '@/commentary/zone-phrase'
+import type { ZonePhrase } from '~/commentary/zone-phrase'
 
 // "Nothing" — possession lost, attack came to nothing.
 export const NOTHING_LINES: ((atkName: string, z: ZonePhrase) => string)[] = [
@@ -64,23 +64,25 @@ export const CHANCE_LINES: ((atkName: string, quality: string, z: ZonePhrase) =>
   (a, q, z) => `${a} put together ${q} ${z.through}.`
 ]
 
-// Goal celebrations — amped voice for the big moment.
-export const GOAL_LINES: ((shooter: string) => string)[] = [
-  (s) => `⚽ GOAL — ${s} finishes!`,
-  (s) => `⚽ GOAL! ${s} buries it!`,
-  (s) => `⚽ GOAL — ${s} slots it home!`,
-  (s) => `⚽ GOAL! ${s} smashes it past the keeper!`,
-  (s) => `⚽ GOAL — ${s} finds the corner!`,
-  (s) => `⚽ GOAL! ${s} converts!`,
-  (s) => `⚽ GOAL — ${s} hammers it in!`,
-  (s) => `⚽ GOAL! ${s} tucks it away!`,
-  (s) => `⚽ GOAL — ${s} rifles it home!`,
-  (s) => `⚽ GOAL! What a finish from ${s}!`,
-  (s) => `⚽ GOAL — ${s} drills it past the keeper!`,
-  (s) => `⚽ GOAL! ${s} unleashes one — and it's in!`,
-  (s) => `⚽ GOAL — ${s} curls one in!`,
-  (s) => `⚽ GOAL! ${s} smashes home a beauty!`,
-  (s) => `⚽ GOAL — ${s} sweeps it in!`
+// Goal celebrations — amped voice for the big moment. Team name attaches
+// at the end so the reader knows who scored even when the shooter is a
+// random procedural name.
+export const GOAL_LINES: ((shooter: string, team: string) => string)[] = [
+  (s, t) => `⚽ GOAL — ${s} (${t}) finishes!`,
+  (s, t) => `⚽ GOAL! ${s} buries it for ${t}!`,
+  (s, t) => `⚽ GOAL — ${s} slots it home. ${t} score!`,
+  (s, t) => `⚽ GOAL! ${s} smashes it past the keeper — ${t}`,
+  (s, t) => `⚽ GOAL — ${s} finds the corner for ${t}!`,
+  (s, t) => `⚽ GOAL! ${s} converts. One for ${t}.`,
+  (s, t) => `⚽ GOAL — ${s} hammers it in. ${t}!`,
+  (s, t) => `⚽ GOAL! ${s} tucks it away — ${t}!`,
+  (s, t) => `⚽ GOAL — ${s} rifles it home for ${t}!`,
+  (s, t) => `⚽ GOAL! What a finish from ${s}. ${t} score!`,
+  (s, t) => `⚽ GOAL — ${s} drills it past the keeper. ${t}!`,
+  (s, t) => `⚽ GOAL! ${s} unleashes one — and it's in! ${t}!`,
+  (s, t) => `⚽ GOAL — ${s} curls one in for ${t}!`,
+  (s, t) => `⚽ GOAL! ${s} smashes home a beauty — ${t}!`,
+  (s, t) => `⚽ GOAL — ${s} sweeps it in. ${t}`
 ]
 
 // Goalkeeper saves.

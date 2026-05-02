@@ -11,9 +11,9 @@
 // Formation coverage: all 7 supported formations represented at least
 // once across the 19 AI teams, so run-season exercises the full engine.
 
-import { generateSquad, type GenerateSquadOpts } from '@/generators/squad-generator'
-import { userSquad, userTactics } from '@/test/fixtures/user-team'
-import type { Squad, Tactics } from '@/types'
+import { generateSquad, type GenerateSquadOpts } from '~/generators/squad-generator'
+import { userSquad, userTactics } from '~/test/fixtures/user-team'
+import type { Squad, Tactics } from '~/types'
 
 export type LeagueTeam = {
   squad: Squad

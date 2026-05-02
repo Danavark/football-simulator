@@ -8,12 +8,12 @@
 //   npx ts-node src/test/run-formation-season.ts
 //   npx ts-node src/test/run-formation-season.ts --seed 42
 
-import { generateCard } from '@/generators/card-generator'
-import type { StatTier } from '@/generators/card-stats'
-import { FORMATION_SLOTS } from '@/consts/engine'
-import { runMatch } from '@/engine/match'
-import { createRng } from '@/lib/rng'
-import type { Card, Formation, LineupSlot, MatchResult, Mentality, Position, Squad, Tactics } from '@/types'
+import { generateCard } from '~/generators/card-generator'
+import type { StatTier } from '~/generators/card-stats'
+import { FORMATION_SLOTS } from '~/consts/engine'
+import { runMatch } from '~/engine/match'
+import { createRng } from '~/lib/rng'
+import type { Card, Formation, LineupSlot, MatchResult, Mentality, Position, Squad, Tactics } from '~/types'
 
 // Bench composition — backup GK + outfield cover (matches squad-generator's procedural-team mode).
 const SUB_POSITIONS: Position[] = ['GK', 'CB', 'CM', 'ST']

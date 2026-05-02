@@ -3,10 +3,10 @@
 // generator (single random pulls) and the squad generator (15-card packs
 // in either pack-pull or procedural-team mode).
 
-import { CARD_CONSTANTS, POSITION_PROFILE, type StatBand, type StatTier } from '@/consts/card'
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { RNG } from '@/lib/rng'
-import type { Position, Stats } from '@/types'
+import { CARD_CONSTANTS, POSITION_PROFILE, type StatBand, type StatTier } from '~/consts/card'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { RNG } from '~/lib/rng'
+import type { Position, Stats } from '~/types'
 
 // Re-export so callers that want the type can import it from this module
 // (the historical home) without reaching into consts/.

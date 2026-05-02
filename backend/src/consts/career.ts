@@ -4,7 +4,7 @@
 //
 // Spec: docs/06_progression-and-balance.md.
 
-import type { RoleGroup } from '@/types'
+import type { RoleGroup } from '~/types'
 
 export const PROGRESSION_CONSTANTS = {
   // ── XP earn (per-event, summed into a per-match total) ───────────────────

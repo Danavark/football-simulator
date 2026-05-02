@@ -6,7 +6,7 @@
 // Used by run-season alongside the AI league pool. Long-term this will
 // move to the DB once the persistence layer ships.
 
-import { generateSquad } from '@/generators/squad-generator'
+import { generateSquad } from '~/generators/squad-generator'
 
 const result = generateSquad({
   name: 'Avark FC',

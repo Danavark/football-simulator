@@ -5,9 +5,9 @@
 //
 // Spec: docs/06_progression-and-balance.md §5.
 
-import { PROGRESSION_CONSTANTS } from '@/consts/career'
-import type { RNG } from '@/lib/rng'
-import type { Card, MatchResult, Squad } from '@/types'
+import { PROGRESSION_CONSTANTS } from '~/consts/career'
+import type { RNG } from '~/lib/rng'
+import type { Card, MatchResult, Squad } from '~/types'
 
 export type InjurySeverity = 'knock' | 'light' | 'medium' | 'heavy'
 

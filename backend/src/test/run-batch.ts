@@ -3,8 +3,8 @@
 // Usage:
 //   npx ts-node src/test/run-batch.ts --count 1000
 
-import { testHome, testAway, testHomeTactics, testAwayTactics } from '@/test/fixtures/test-teams'
-import { runMatch } from '@/engine/match'
+import { testHome, testAway, testHomeTactics, testAwayTactics } from '~/test/fixtures/test-teams'
+import { runMatch } from '~/engine/match'
 
 // Read --count from argv, default 1000.
 function parseArgs(): { count: number } {
@@ -154,7 +154,7 @@ function main() {
   console.log(`  (direct reds: ${b.directReds}, second yellows: ${b.secondYellows})`)
   console.log(rangePer('Injuries', b.injuries, b.matches, 5, 8))
   console.log(rangePer('Penalties', b.penalties, b.matches, 10, 15))
-  console.log(range('Corners per match (foul-derived)', b.corners / b.matches, 0, 12))
+  console.log(range('Corners per match', b.corners / b.matches, 4, 12))
   console.log(range('Chances per match', b.chances / b.matches, 4, 8))
 
   console.log('\nResults breakdown:')
